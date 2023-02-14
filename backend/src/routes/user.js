@@ -6,16 +6,18 @@ const router = express.Router()
 const userController = require('../controllers/user')
 const authController = require('../controllers/auth')
 
-router.all('*', passport.authenticate('bearer', {session: false}), authController.allowOnly(['Admin']))
+const auth = passport.authenticate('bearer', {session: false})
 
-router.post('/', userController.create)
+const allowAdmin = authController.allowOnly(['Admin'])
 
-router.get('/', userController.getAll)
+router.post('/', auth, allowAdmin, userController.create)
 
-router.get('/:userId/:collection?', userController.getOne)
+router.get('/', auth, allowAdmin, userController.getAll)
 
-router.delete('/:userId', userController.delete)
+router.get('/:userId/:collection?', auth, allowAdmin, userController.getOne)
 
-router.patch('/:userId', userController.update)
+router.delete('/:userId', auth, allowAdmin, userController.delete)
+
+router.patch('/:userId', auth, allowAdmin, userController.update)
 
 module.exports = router;

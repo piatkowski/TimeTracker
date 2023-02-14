@@ -4,7 +4,8 @@ const passport = require('passport')
 
 const app = express()
 
-app.use(passport.initialize());
+app.use(passport.initialize())
+app.use(express.json())
 
 // Register Strategies
 require('./auth/passport');

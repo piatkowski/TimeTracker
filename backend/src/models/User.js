@@ -1,6 +1,5 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
-const {hash} = require("bcrypt");
 
 const Schema = mongoose.Schema
 
@@ -8,7 +7,7 @@ const UserSchema = new Schema({
     name: {
         type: String,
         required: true,
-        index: {unique: true}
+        index: { unique: true }
     },
     password: {
         type: String,
@@ -34,8 +33,8 @@ const UserSchema = new Schema({
         ref: 'Team'
     }
 }, {
-    toJSON: {virtuals: true},
-    toObject: {virtuals: true}
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
 });
 
 UserSchema.virtual('projects', {
@@ -51,6 +50,7 @@ UserSchema.virtual('tasks', {
 })
 
 UserSchema.pre('save', async function (next) {
+
     if (!this.isModified('password')) {
         return next();
     }
