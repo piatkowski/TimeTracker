@@ -1,25 +1,37 @@
-import logo from './logo.svg';
-import './App.css';
+import {ThemeProvider, createTheme} from '@mui/material/styles';
+import Login from './pages/Login'
+import {isUserLoggedIn} from "./controllers/auth";
+import React, {useEffect, useState} from "react";
+import {CssBaseline} from "@mui/material";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const theme = createTheme({
+    palette: {
+        primary: {
+            main: '#3f51b5',
+            primary: '#3f51b5',
+            secondary: '#ab003c'
+        },
+    },
+});
+
+const App = () => {
+
+    const [isLoggedIn, setIsLoggedIn] = useState(false)
+    const [isInitialChecked, setIsInitialChecked] = useState(false)
+
+    useEffect(() => {
+        const checkUserLoggedIn = async () => {
+            setIsLoggedIn(await isUserLoggedIn())
+            setIsInitialChecked(true)
+        }
+        checkUserLoggedIn().catch(err => console.error(err))
+    }, [])
+
+    return <ThemeProvider theme={theme}>
+        <CssBaseline/>
+        { isInitialChecked && !isLoggedIn && <Login setIsLoggedIn={setIsLoggedIn} /> }
+        { isInitialChecked && isLoggedIn && <div>Welcome!</div> }
+    </ThemeProvider>;
 }
 
-export default App;
+export default App

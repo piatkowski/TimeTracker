@@ -6,7 +6,7 @@ const router = express.Router()
 const teamController = require('../controllers/team')
 const authController = require('../controllers/auth')
 
-const auth = passport.authenticate('bearer', {session: false})
+const auth = passport.authenticate('cookie', {session: false})
 
 const allowAdmin = authController.allowOnly(['Admin'])
 const allowUser = authController.allowOnly(['Admin', 'User'])

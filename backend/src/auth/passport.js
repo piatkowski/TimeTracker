@@ -1,6 +1,8 @@
 const passport = require('passport')
 const BasicStrategy = require('passport-http').BasicStrategy
 const BearerStrategy = require('passport-http-bearer').Strategy
+const CookieStrategy = require('passport-cookie').Strategy
+
 const User = require('../models/User')
 
 passport.use(new BasicStrategy(
@@ -19,10 +21,24 @@ passport.use(new BasicStrategy(
                     return done(null, false);
                 }
                 const newToken = await user.regenerateToken();
-                return done(null, { token: newToken });
+                return done(null, {token: newToken});
             } catch (err) {
                 return done(null, false);
             }
+        });
+    }
+));
+
+passport.use(new CookieStrategy(
+    (token, done) => {
+        User.findOne({token: token}, (err, user) => {
+            if (err) {
+                return done(err);
+            }
+            if (!user) {
+                return done(null, false);
+            }
+            return done(null, user, {scope: user.type});
         });
     }
 ));
@@ -36,7 +52,7 @@ passport.use(new BearerStrategy(
             if (!user) {
                 return done(null, false);
             }
-            return done(null, user, { scope: user.type });
+            return done(null, user, {scope: user.type});
         });
     }
 ));
