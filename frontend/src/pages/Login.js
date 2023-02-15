@@ -1,33 +1,30 @@
-import * as React from 'react';
+import React from "react";
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import {login} from "../controllers/auth";
-import {useState} from "react";
-import {Alert} from "@mui/material";
+import { useCallback, useState } from "react";
+import { Alert } from "@mui/material";
+import { useAuthContext } from "../store/auth-context";
 
-const Login = (props) => {
+const Login = () => {
 
-    const [ error, setError ] = useState('')
+    const authCtx = useAuthContext();
 
-    const handleSubmit = (event) => {
+    const [error, setError] = useState('');
+
+    const handleSubmit = useCallback(event => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        login(data.get('username'), data.get('password')).then(isLogged => {
-            if (isLogged) {
-                setError('')
-                props.setIsLoggedIn(true)
-            } else {
-                setError('Invalid username or password')
-            }
+        authCtx.loginHandler(data.get('username'), data.get('password')).then(isAuth => {
+            setError(isAuth ? '' : 'Invalid username or password')
         })
-    };
+    }, [authCtx])
 
-    const clearError = () => {
+    const clearError = useCallback(() => {
         setError('')
-    }
+    }, [])
 
     return (
         <Container component="main" maxWidth="xs">
@@ -42,7 +39,7 @@ const Login = (props) => {
                 <Typography component="h1" variant="h5">
                     Time Tracker App
                 </Typography>
-                <Box component="form" onSubmit={handleSubmit} noValidate sx={{mt: 1}}>
+                <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
                     <TextField
                         margin="normal"
                         required
@@ -63,13 +60,13 @@ const Login = (props) => {
                         id="password"
                         onFocus={clearError}
                     />
-                    { error && <Alert severity="error">{error}</Alert>}
+                    {error && <Alert severity="error">{error}</Alert>}
                     <Button
                         type="submit"
                         fullWidth
                         variant="contained"
                         size="large"
-                        sx={{mt: 2}}
+                        sx={{ mt: 2 }}
                     >SIGN IN</Button>
                 </Box>
             </Box>

@@ -1,8 +1,9 @@
-import {ThemeProvider, createTheme} from '@mui/material/styles';
+import React, { useEffect } from "react";
+import Admin from "./pages/Admin";
 import Login from './pages/Login'
-import {isUserLoggedIn} from "./controllers/auth";
-import React, {useEffect, useState} from "react";
-import {CssBaseline} from "@mui/material";
+import { useAuthContext } from "./store/auth-context";
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { CssBaseline } from "@mui/material";
 
 const theme = createTheme({
     palette: {
@@ -16,22 +17,33 @@ const theme = createTheme({
 
 const App = () => {
 
-    const [isLoggedIn, setIsLoggedIn] = useState(false)
-    const [isInitialChecked, setIsInitialChecked] = useState(false)
+    const authCtx = useAuthContext();
 
     useEffect(() => {
-        const checkUserLoggedIn = async () => {
-            setIsLoggedIn(await isUserLoggedIn())
-            setIsInitialChecked(true)
-        }
-        checkUserLoggedIn().catch(err => console.error(err))
+        authCtx.autoLoginHandler();
     }, [])
 
-    return <ThemeProvider theme={theme}>
-        <CssBaseline/>
-        { isInitialChecked && !isLoggedIn && <Login setIsLoggedIn={setIsLoggedIn} /> }
-        { isInitialChecked && isLoggedIn && <div>Welcome!</div> }
-    </ThemeProvider>;
+    let app;
+
+    if (authCtx.isLoggedIn) {
+        app = (
+            <React.Fragment>
+                <Admin />
+            </React.Fragment>
+        );
+    } else {
+        app = (
+            <Login/>
+        )
+    }
+
+
+    return (
+        <ThemeProvider theme={theme}>
+            <CssBaseline/>
+            {app}
+        </ThemeProvider>
+    );
 }
 
 export default App
