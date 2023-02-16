@@ -4,7 +4,7 @@
 
 ### User
 
-    - Admin
+    - Dashboard
     - TeamLeader
     - TeamMember belongs to TeamLeader
 

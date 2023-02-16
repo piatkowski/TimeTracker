@@ -2,7 +2,7 @@ module.exports.token = async (req, res) => {
     res.cookie('token', req.user.token, { httpOnly: true, secure: true })
     res.send({
         auth: true,
-        user: req.user
+        user: req.user.user
     })
 }
 

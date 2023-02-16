@@ -21,7 +21,7 @@ passport.use(new BasicStrategy(
                     return done(null, false);
                 }
                 const newToken = await user.regenerateToken();
-                return done(null, {token: newToken});
+                return done(null, {token: newToken, user: user});
             } catch (err) {
                 return done(null, false);
             }

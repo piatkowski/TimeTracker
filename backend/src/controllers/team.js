@@ -28,10 +28,13 @@ module.exports.create = async (req, res, next) => {
 module.exports.getAll = async (req, res, next) => {
     try {
         let params = {}
+        let populate = ['leader'];
         if (req.authInfo.scope === 'User') {
             params = {_id: req.user.team}
+            populate.push('users')
         }
-        const teams = await Team.find(params).populate('leader')
+
+        const teams = await Team.find(params).populate(populate)
         res.send(teams)
     } catch (err) {
         next(err)
