@@ -1,10 +1,12 @@
 const User = require('../models/User')
+const mongoose = require("mongoose");
 
 module.exports.create = async (req, res, next) => {
 
     if (!req.body.name || !req.body.password) {
         res.send({
-            status: 'Name and password are required'
+            success: false,
+            error: 'Name and password are required'
         })
     }
 
@@ -15,10 +17,13 @@ module.exports.create = async (req, res, next) => {
             name: req.body.name,
             password: req.body.password,
             type: 'User',
-            role: (req.body.role && req.body.role === 'TeamLeader') ? 'TeamLeader' : 'TeamMember'
+            role: (req.body.role && req.body.role === 'TeamLeader') ? 'TeamLeader' : 'TeamMember',
+            firstName: req.body.firstName ?? '',
+            lastName: req.body.lastName ?? '',
+            team: new mongoose.Types.ObjectId(req.body.team)
         })
-        const savedUser = await user.save()
-        res.send(savedUser)
+        await user.save()
+        res.send({ success: true })
     } catch (err) {
         next(err)
     }
@@ -26,7 +31,7 @@ module.exports.create = async (req, res, next) => {
 
 module.exports.getAll = async (req, res, next) => {
     try {
-        const users = await User.find()
+        const users = await User.find().populate('team')
         res.send(users)
     } catch (err) {
         next(err)

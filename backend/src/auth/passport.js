@@ -38,7 +38,7 @@ passport.use(new CookieStrategy(
             if (!user) {
                 return done(null, false);
             }
-            return done(null, user, {scope: user.type});
+            return done(null, user, {scope: user.type, role: user.role});
         });
     }
 ));

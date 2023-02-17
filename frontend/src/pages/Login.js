@@ -6,7 +6,8 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { useCallback, useState } from "react";
 import { Alert } from "@mui/material";
-import { useAuthContext } from "../store/auth-context";
+import { useAuthContext } from "../contexts/auth-context";
+import ApiService from "../services/api-service";
 
 const Login = () => {
 
@@ -17,7 +18,7 @@ const Login = () => {
     const handleSubmit = useCallback(event => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        authCtx.loginHandler(data.get('username'), data.get('password')).then(isAuth => {
+        ApiService.loginHandler(authCtx, data.get('username'), data.get('password')).then(({ isAuth }) => {
             setError(isAuth ? '' : 'Invalid username or password')
         })
     }, [authCtx])
@@ -26,7 +27,7 @@ const Login = () => {
         setError('')
     }, [])
 
-    return (
+    return authCtx.isLoggedIn === false && (
         <Container component="main" maxWidth="xs">
             <Box
                 sx={{

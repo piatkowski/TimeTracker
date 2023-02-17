@@ -17,15 +17,22 @@ module.exports.logout = (req, res) => {
     res.clearCookie('token').end();
 }
 
-module.exports.allowOnly = allowedScopes => {
+const allowOnly = roles => {
 
     return (req, res, next) => {
-        if (!allowedScopes.includes(req.authInfo.scope)) {
+        if (!roles.includes(req.authInfo.role)) {
             const error = new Error('Forbidden')
             error.code = 403
             return next(error)
         }
         return next();
     }
-
 }
+
+module.exports.allowOnly = allowOnly;
+
+module.exports.allowAdmin = allowOnly(['Admin'])
+
+module.exports.allowLeader = allowOnly(['Admin', 'TeamLeader'])
+
+module.exports.allowMember = allowOnly(['Admin', 'TeamLeader', 'TeamMember'])

@@ -3,7 +3,7 @@ const passport = require('passport')
 
 const router = express.Router()
 
-const authController = require('../controllers/auth')
+const authController = require('../controllers/access')
 
 router.post('/token', passport.authenticate('basic', { session: false, failWithError: true }), authController.token)
 

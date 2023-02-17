@@ -58,11 +58,13 @@ module.exports.getOne = async (req, res, next) => {
 }
 
 module.exports.delete = async (req, res, next) => {
-    const teamId = req.params.teamId
+    const teamId = req.params.teamId;
     await Team.deleteOne({_id: teamId});
+    res.send()
 }
 
 module.exports.update = async (req, res, next) => {
     const teamId = req.authInfo.scope === 'User' ? req.user.team : req.params.teamId
     await Team.updateOne({_id: teamId}, { /* .... */})
+    res.send()
 }

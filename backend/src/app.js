@@ -3,6 +3,7 @@ const express = require('express')
 const passport = require('passport')
 const cors = require('cors')
 const cookieParser = require('cookie-parser')
+const bodyParser = require('body-parser')
 
 const app = express()
 
@@ -12,7 +13,7 @@ app.use(cors({
 }))
 app.use(cookieParser())
 app.use(passport.initialize())
-app.use(express.json())
+app.use(bodyParser.json())
 
 // Register Strategies
 require('./auth/passport');

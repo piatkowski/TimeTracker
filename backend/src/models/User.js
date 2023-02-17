@@ -31,6 +31,12 @@ const UserSchema = new Schema({
     team: {
         type: Schema.Types.ObjectId,
         ref: 'Team'
+    },
+    firstName: {
+        type: String
+    },
+    lastName: {
+        type: String
     }
 }, {
     toJSON: { virtuals: true },

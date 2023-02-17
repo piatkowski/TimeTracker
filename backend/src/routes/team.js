@@ -4,21 +4,18 @@ const passport = require('passport')
 const router = express.Router()
 
 const teamController = require('../controllers/team')
-const authController = require('../controllers/auth')
+const access = require('../controllers/access')
 
 const auth = passport.authenticate('cookie', { session: false, failWithError: true })
 
-const allowAdmin = authController.allowOnly(['Admin'])
-const allowUser = authController.allowOnly(['Admin', 'User'])
+router.post('/', auth, access.allowAdmin, teamController.create)
 
-router.post('/', auth, allowUser, teamController.create)
+router.get('/', auth, access.allowMember, teamController.getAll)
 
-router.get('/', auth, allowUser, teamController.getAll)
+router.get('/:teamId/:collection?', auth, access.allowMember, teamController.getOne)
 
-router.get('/:teamId/:collection?', auth, allowUser, teamController.getOne)
+router.delete('/:teamId', auth, access.allowAdmin, teamController.delete)
 
-router.delete('/:teamId', auth, allowAdmin, teamController.delete)
-
-router.patch('/:teamId', auth, allowUser, teamController.update)
+router.patch('/:teamId', auth, access.allowAdmin, teamController.update)
 
 module.exports = router;
